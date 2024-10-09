@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Sách</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .book {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Danh Sách Sách</h1>
+    <div>
+        <% books.forEach(book => { %>
+            <div class="book">
+                <h2><%= book.title %></h2>
+                <p>Tác giả: <%= book.author %></p>
+                <p>Mô tả: <%= book.description %></p>
+                <p>Giá: <%= book.price %> $</p>
+                <p>Tổng số bản sao: <%= book.total_copies %></p>
+                <p>Bản sao có sẵn: <%= book.copies_available %></p>
+            </div>
+        <% }); %>
+    </div>
+</body>
+</html>
