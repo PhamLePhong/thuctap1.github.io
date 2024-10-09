@@ -15,4 +15,9 @@ export class LoansController{
     async return(@Body()body:{loan_id:number,user_id:number}){
         return this.loansService.returnBook(body.loan_id,body.user_id);
     }
+
+    @Post('pay-fine')
+    async payFine(@Body()body:{loan_id:number;user_id:number}){
+        return await this.loansService.payFine(body.loan_id,body.user_id);
+    }
 }

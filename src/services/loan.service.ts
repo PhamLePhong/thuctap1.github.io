@@ -1,8 +1,10 @@
+
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Book } from "src/models/book.model";
 import { Loan } from "../models/loan.model";
 import { User } from "src/models/user.model";
+import { Payment } from "src/models/payment.model";
 
 
 @Injectable()
@@ -91,6 +93,32 @@ export class LoansService{
         book.copies_available+=1;
         await book.save();
         return loan;
+    }
+
+    async payFine(loan_id:number,user_id:number):Promise<Payment>{
+        const loan = await this.loanModel.findOne({
+            where:{
+                loan_id:loan_id,
+                user_id:user_id,
+            },
+        });
+
+        if(!loan){
+            throw new NotFoundException('Đơn mượn không tồn tại.');
+        }
+        if(loan.fine<=0){
+            throw new BadRequestException('Không có phí phạt để thanh toán.');
+        }
+        const payment = await Payment.create({
+            loan_id:loan_id,
+            amount:loan.fine,
+            payment_date:new Date(),
+        });
+
+        loan.fine = 0;
+        await loan.save();
+
+        return payment;
     }
 
     private async checkUserPermissions(user_id:number):Promise<boolean>{
