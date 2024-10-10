@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Book } from "src/models/book.model";
 import { User } from "src/models/user.model";
 
@@ -28,5 +28,7 @@ export class Loan extends Model<Loan>{
         allowNull: true,
     })
     status:'active'|'returned';
+    @BelongsTo(() => Book)
+    Book: Book; 
 
 }

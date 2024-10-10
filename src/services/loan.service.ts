@@ -1,4 +1,3 @@
-
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Book } from "src/models/book.model";
@@ -95,30 +94,50 @@ export class LoansService{
         return loan;
     }
 
-    async payFine(loan_id:number,user_id:number):Promise<Payment>{
-        const loan = await this.loanModel.findOne({
+    async payFine(user_id:number):Promise<{totalAmount:number;payment:Payment}>{
+        const loans = await this.loanModel.findAll({
             where:{
-                loan_id:loan_id,
+                
                 user_id:user_id,
+                return_date:null,
             },
+            include:[
+                {
+                    model:Book,
+                    required:true,
+                    attributes:['book_id','price'],
+                },
+            ],
         });
+        let totalFine = 0;
+        let totalPrice = 0;
+        for (const loan of loans){
+            const bookPrice = loan.Book.price;
+            
+            totalFine += loan.fine || 0;
+            totalPrice+= Number(bookPrice);
+            
+        }
 
-        if(!loan){
-            throw new NotFoundException('Đơn mượn không tồn tại.');
+        const totalAmount = totalFine+totalPrice;
+
+
+        if(typeof totalAmount !=='number'||isNaN(totalAmount)||totalAmount<0){
+            throw new BadRequestException('Số tiền không hợp lệ.');
         }
-        if(loan.fine<=0){
-            throw new BadRequestException('Không có phí phạt để thanh toán.');
-        }
+        
+
         const payment = await Payment.create({
-            loan_id:loan_id,
-            amount:loan.fine,
-            payment_date:new Date(),
+            loan_id:null,
+            amount:parseFloat(totalAmount.toFixed(2)),
+            payment_date:new Date()
         });
 
-        loan.fine = 0;
-        await loan.save();
-
-        return payment;
+        for(const loan of loans){
+            loan.fine = 0;
+            await loan.save();
+        }
+        return { totalAmount, payment};
     }
 
     private async checkUserPermissions(user_id:number):Promise<boolean>{
@@ -126,7 +145,7 @@ export class LoansService{
         if(!user){
             return false;
         }
-        return user&&(user.role==='customer'||user.role==='student');
+        return user&&(user.role==='customer'||user.role==='staff');
     }
 }
 

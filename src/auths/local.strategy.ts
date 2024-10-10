@@ -6,24 +6,23 @@ import { Strategy } from "passport-local";
 
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy){
+export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(
-        private authService:AuthService,
-      
-    ){
-        super(
-        
-        );
-    }
-    
-    async validate(
-    
-        user_id:string
-    ):Promise<any>{
+        private authService: AuthService,
 
-       
-        const user = await this.authService.validateUserById(user_id );
-        if(!user){
+    ) {
+        super();
+    }
+
+    async validate(
+        user_id: string
+    ): Promise<any> {
+
+
+        const user = await this.authService.validateUserById(user_id);
+        console.log(user, 'userLogin');
+        
+        if (!user) {
             throw new UnauthorizedException();
 
         }

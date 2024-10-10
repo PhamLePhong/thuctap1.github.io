@@ -2,10 +2,10 @@ import { CreaeBookDto, UpdateBookDto } from 'src/dto/create.dto';
 import { BookService } from '../services/book.servive';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Render, UseGuards } from "@nestjs/common";
 import { Book } from '../models/book.model';
-// import { AuthGuard } from '@nestjs/passport';
-// import { LocalAuthGuard } from 'src/auths/local-auth.guard';
 import { JwtAuthGuard } from 'src/auths/jwt-auth.guard';
-// import { query } from 'express';
+import { RolesGuard } from 'src/auths/roles.guard';
+import { Roles } from 'src/auths/roles.decorator';
+
 
 @Controller('book')
 export class BookController{
@@ -30,7 +30,8 @@ export class BookController{
     async search(@Query('query')query:string):Promise<Book[]>{
         return this.bookService.searchBooks(query);
     }
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    // @Roles('staff')
     
     @Post()
     create(@Body() createBookDto:CreaeBookDto):Promise<Book>{

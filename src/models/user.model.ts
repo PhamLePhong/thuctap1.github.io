@@ -1,5 +1,6 @@
 
 import { AutoIncrement, Column, CreatedAt, DataType, HasMany, Model, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
+import { RoleEnum } from "src/common/enum/RoleEnum";
 // import { Book } from "src/models/book.model";
 
 @Table({
@@ -32,7 +33,7 @@ export class User extends Model<User>{
         type: DataType.ENUM('student', 'staff', 'customer'),
         allowNull: true,
       })
-      role: 'student' | 'staff' | 'customer';
+      role: RoleEnum;
     
       @CreatedAt
       @Column({

@@ -22,16 +22,16 @@ import { LoansModule } from './modules/loan.module';
     UserModule,
     BookModule,
     AuthModule,
-    LoansModule
+    LoansModule,
     
   ],
   controllers: [AppController],
   providers: [
-    {
-      provide:APP_GUARD,
-      useClass:RolesGuard,
+  //   {
+  //     provide:APP_GUARD,
+  //     useClass:RolesGuard,
 
-  },
+  // },
     AppService
   ],
 })

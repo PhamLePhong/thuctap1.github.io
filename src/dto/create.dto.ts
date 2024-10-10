@@ -1,17 +1,18 @@
+import { RoleEnum } from "src/common/enum/RoleEnum"
 
 export class CreateUserDto{
     
     username:string
     password:string
     email:string
-    role:'student' | 'staff' | 'customer'
+    role: RoleEnum
 }
 
 export class UpdateUserDto{
     username:string
     password:string
     email:string
-    role:'student' | 'staff' | 'customer'
+    role: RoleEnum
 }
 
 export class CreaeBookDto{
